@@ -108,7 +108,7 @@ def main():
                     
 
 
-                    if prediction == 1:
+                    if prediction[0] == 1:
                         st.markdown('<p style="font-size:40px; text-align:center; color:#00008B; font-weight: bold; ">Désolé, votre demande a été rejetée.</p>', unsafe_allow_html=True)
                     else:
                         st.markdown('<p style="font-size:40px; text-align:center; color:#00008B; font-weight: bold; ">Félicitation ! Votre demande est acceptée !</p>', unsafe_allow_html=True)
