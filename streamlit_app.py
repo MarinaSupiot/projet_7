@@ -74,7 +74,7 @@ def main():
 
     if "is_initial_load" not in st.session_state:
         col2.markdown('<p style="font-size:36px; font-weight:bold;">Bienvenue dans l\'application<br>Prêt à dépenser!</p>', unsafe_allow_html=True)
-        col1.image('https://github.com/MarinaSupiot/projet_7/blob/main/Prets_a_depenser.png', width=110)
+        col1.image('https://raw.githubusercontent.com/MarinaSupiot/projet_7/main/Prets_a_depenser.png', width=110)
         st.session_state.is_initial_load = True
 
     while offset < 16000:
