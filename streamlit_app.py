@@ -77,7 +77,7 @@ def main():
         col1.image('https://raw.githubusercontent.com/MarinaSupiot/projet_7/main/Prets_a_depenser.png', width=110)
         st.session_state.is_initial_load = True
 
-    while offset < 16000:
+    while offset < 40000:
         offset += limit  
         next_batch = load_data_batch(offset, limit)
 
