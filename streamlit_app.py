@@ -26,7 +26,7 @@ import ast
 fastapi_url = "https://score-ff2bfc305853.herokuapp.com"
 
 # Функция для загрузки данных с учетом offset и limit
-@st.cache_resource
+@st.cache_data(show_spinner=False)
 def load_data_batch(offset: int, limit: int, show_spinner=False):
     try:
         load_data_url = f"{fastapi_url}/load_data"
