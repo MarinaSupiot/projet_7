@@ -61,9 +61,19 @@ def load_model():
 @st.cache_data(show_spinner=False)
 def compute_shap_values(_explainer_shap, df):
     return _explainer_shap.shap_values(df)
+    
+def reset_app():
+    # Сброс всех значений в session_state, которые вы используете
+    keys_to_reset = ['option1', 'option2', 'option3', 'selected_client_id']
+    for key in keys_to_reset:
+        if key in st.session_state:
+            del st.session_state[key]
+    # Очистка содержимого экрана может быть достигнута через перезапуск приложения
+    st.experimental_rerun()
 
 def main():
     col1, col2 = st.columns([2, 10])
+    
 
     offset = 0
     limit = 8000  
@@ -86,12 +96,34 @@ def main():
 
         st.session_state.df_test = pd.concat([st.session_state.df_test, next_batch], ignore_index=True)
 
+
+    if 'selected_client' not in st.session_state:
+        st.session_state.selected_client = ''
+        st.session_state.option1 = False
+        st.session_state.option2 = False
+        st.session_state.option3 = False
+    client_list = list(st.session_state.df_test['SK_ID_CURR'].unique())                
+
     option = st.sidebar.selectbox(
         "Entrer le numero de client",
-        st.session_state.df_test['SK_ID_CURR'].unique(),
-        index=None,
+        client_list,
+        index=0,
         placeholder="Select le numero de client",
+        format_func=lambda x: '' if x == '' else x,  # Форматирование для отображения пустой строки по умолчанию
     )
+
+    if option and option != st.session_state.selected_client:
+        st.session_state.selected_client = option        
+        st.session_state.option1 = False
+        st.session_state.option2 = False
+        st.session_state.option3 = False
+
+    option1_key = f"option1_{st.session_state.selected_client}"
+    option2_key = f"option2_{st.session_state.selected_client}"
+    option3_key = f"option3_{st.session_state.selected_client}"
+
+  
+
 
     if st.sidebar.button("Statut de la demande"):
         filtered_df = st.session_state.df_test[st.session_state.df_test['SK_ID_CURR'] == option]
@@ -100,7 +132,6 @@ def main():
             input_data = filtered_df.drop(columns=['SK_ID_CURR']).values
 
             if len(input_data.shape) == 2 and input_data.shape[0] > 0 and input_data.shape[1] > 0:
-                #model = load_model()
 
                 if model is not None:
                     prediction_probabilities = model.predict_proba(input_data)
@@ -152,18 +183,16 @@ def main():
                 st.write("Erreur : Les données d'entrée sont vides ou n'ont pas deux dimensions.")
 
     st.markdown('<div id="section_option2"></div>', unsafe_allow_html=True)
-
-    option1 = st.sidebar.checkbox("Facteurs d'influence globaux")
-    option2 = st.sidebar.checkbox("Facteurs d'influence individuels")
-    option3 = st.sidebar.checkbox("Comparaison avec les autres clients")
+    
+    st.session_state.option1 = st.sidebar.checkbox("Facteurs d'influence globaux", value=st.session_state.option1, key=option1_key)
+    st.session_state.option2 = st.sidebar.checkbox("Facteurs d'influence individuels", value=st.session_state.option2, key=option2_key)
+    st.session_state.option3 = st.sidebar.checkbox("Comparaison avec les autres clients", value=st.session_state.option3, key=option3_key)
 
     spinner_text = st.empty()
     spinner = st.spinner()
 # Проверка состояния чекбокса option1
-    if option1:
+    if st.session_state.option1:
             st.title("Facteurs d'influence globaux")
-            #model = load_model()
-            #explainer_shap = shap.TreeExplainer(model)
             df_test_indexed = st.session_state.df_test.set_index('SK_ID_CURR')
 
             # Проверка, что shap_values не является None
@@ -183,11 +212,9 @@ def main():
             else:
                 st.write("Erreur : Les valeurs SHAP ne sont pas disponibles.")   
 
-    if option2:
+    if st.session_state.option2:
 
                 st.title("Facteurs d'influence individuels")
-                #model = load_model()
-                #explainer_shap = shap.TreeExplainer(model)
                 df_test_indexed = st.session_state.df_test.set_index('SK_ID_CURR')
                 idx_option2 = df_test_indexed.index.get_loc(option)
 
@@ -212,7 +239,7 @@ def main():
                     st.write("Erreur : Les valeurs SHAP ne sont pas disponibles.")   
 
 # Check Option 3 is Selected
-    if option3:
+    if st.session_state.option3:
             st.markdown('<a href="#section_option2">Aller aux facteurs d\'influence individuels</a>', unsafe_allow_html=True)
             st.title("Analyse comparée avec les autres clients")
 
@@ -229,7 +256,7 @@ def main():
 
             import seaborn as sns
 
-            # Выбор типа графика
+
             # Выбор типа графика
             plot_type = st.radio("Choisir le type de graphique :", ("Histogramme", "Boxplot"))
 
