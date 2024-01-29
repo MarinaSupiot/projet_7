@@ -40,7 +40,7 @@ def load_data_batch(offset: int, limit: int, show_spinner=False):
 
 
 
-
+@st.cache_resource
 def load_model():
     model_url = "https://score-ff2bfc305853.herokuapp.com/load_model"
 
