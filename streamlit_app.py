@@ -231,7 +231,7 @@ def main():
                         st.text("")
                         left_margin, _, right_margin = st.columns([1, 5, 20])
                         left_margin.text("")
-                        st_shap(shap.plots._waterfall.waterfall_legacy(explainer_shap.expected_value[0], shap_values_option2[0][idx_option2, :], df_test_indexed.iloc[idx_option2, :],  max_display=num_columns_2))
+                        st_shap(shap.plots._waterfall.waterfall_legacy(explainer_shap.expected_value[1], shap_values_option2[1][idx_option2, :], df_test_indexed.iloc[idx_option2, :],  max_display=num_columns_2))
                         right_margin.text("")
 
 
