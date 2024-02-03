@@ -151,8 +151,8 @@ def main():
 
                 red_color = '#FF0000'
                 green_color = '#00FF00'
-                green_range = (0, 0.556)
-                red_range = (0.556, 1)
+                green_range = (0, 0.652)
+                red_range = (0.652, 1)
 
                 fig = go.Figure()
                 fig.add_trace(go.Indicator(
